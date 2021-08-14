@@ -66,11 +66,11 @@ final class Htmlify implements HtmlifyInterface
         $label = (string) $page->getLabel();
         $title = $page->getTitle();
 
-        if ('' !== $label && null !== $this->translator) {
+        if (!empty($label) && null !== $this->translator) {
             $label = ($this->translator)($label, $page->getTextDomain());
         }
 
-        if (null !== $title && null !== $this->translator) {
+        if (!empty($title) && null !== $this->translator) {
             $title = ($this->translator)($title, $page->getTextDomain());
         }
 
@@ -99,7 +99,7 @@ final class Htmlify implements HtmlifyInterface
             array_flip(['lastmod', 'changefreq', 'priority'])
         );
 
-        if ('' !== $label && $escapeLabel) {
+        if (!empty($label) && $escapeLabel) {
             $label = ($this->escaper)($label);
         }
 
