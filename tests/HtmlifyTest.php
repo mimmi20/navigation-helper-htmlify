@@ -1273,4 +1273,78 @@ final class HtmlifyTest extends TestCase
 
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false));
     }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws BadMethodCallException
+     */
+    public function testHtmlifyWithArrayOfClassesAndAttributes5(): void
+    {
+        $expected = '<span id="breadcrumbs-testIdEscaped" classEscaped="testClassEscaped" onClick=\'{"a":"b"}\' data-test="test-class1 test-class2">testLabelTranslatedAndEscaped</span>';
+
+        $id         = 'testId';
+        $class      = 'test-class';
+        $onclick    = (object) ['a' => 'b'];
+        $testData   = ['test-class1', 'test-class2'];
+        $attributes = ['data-bs-toggle' => 'dropdown', 'role' => 'button', 'aria-expanded' => 'false'];
+
+        $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $escapeHtml->expects(self::never())
+            ->method('__invoke');
+
+        $htmlElement = $this->getMockBuilder(HtmlElementInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $htmlElement->expects(self::once())
+            ->method('toHtml')
+            ->with('span', ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes, '')
+            ->willReturn($expected);
+
+        $page = $this->getMockBuilder(AbstractPage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $page->expects(self::never())
+            ->method('isVisible');
+        $page->expects(self::never())
+            ->method('getResource');
+        $page->expects(self::never())
+            ->method('getPrivilege');
+        $page->expects(self::never())
+            ->method('getParent');
+        $page->expects(self::once())
+            ->method('getLabel')
+            ->willReturn(null);
+        $page->expects(self::once())
+            ->method('getTitle')
+            ->willReturn(null);
+        $page->expects(self::never())
+            ->method('getTextDomain');
+        $page->expects(self::once())
+            ->method('getId')
+            ->willReturn($id);
+        $page->expects(self::once())
+            ->method('getClass')
+            ->willReturn($class);
+        $page->expects(self::once())
+            ->method('getHref')
+            ->willReturn('');
+        $page->expects(self::never())
+            ->method('getTarget');
+        $page->expects(self::once())
+            ->method('getCustomProperties')
+            ->willReturn(['onClick' => $onclick, 'data-test' => $testData, 'lastmod' => '2020-02-01', 'changefreq' => '1', 'priority' => 1]);
+        $page->expects(self::never())
+            ->method('getOrder');
+        $page->expects(self::never())
+            ->method('setParent');
+
+        assert($escapeHtml instanceof EscapeHtml);
+        assert($htmlElement instanceof HtmlElementInterface);
+        $helper = new Htmlify($escapeHtml, $htmlElement);
+
+        self::assertSame($expected, $helper->toHtml('Breadcrumbs\\Breadcrumbs', $page, true, false, $attributes, false));
+    }
 }
