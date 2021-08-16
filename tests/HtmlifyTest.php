@@ -13,7 +13,6 @@ declare(strict_types = 1);
 namespace Mimmi20Test\NavigationHelper\Htmlify;
 
 use Laminas\I18n\View\Helper\Translate;
-use Laminas\Navigation\Exception\BadMethodCallException;
 use Laminas\Navigation\Page\AbstractPage;
 use Laminas\View\Helper\EscapeHtml;
 use Mezzio\Navigation\Page\PageInterface;
@@ -1203,7 +1202,6 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes4(): void
     {
@@ -1277,7 +1275,6 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
-     * @throws BadMethodCallException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes5(): void
     {
