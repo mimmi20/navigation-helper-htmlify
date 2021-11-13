@@ -19,6 +19,8 @@ use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Psr\Container\ContainerExceptionInterface;
 
+use function assert;
+
 final class HtmlifyFactory
 {
     /**
@@ -31,14 +33,20 @@ final class HtmlifyFactory
         $plugin     = $container->get(ViewHelperPluginManager::class);
         $translator = null;
 
+        assert($plugin instanceof ViewHelperPluginManager);
+
         if ($plugin->has(Translate::class)) {
             $translator = $plugin->get(Translate::class);
+
+            assert($translator instanceof Translate);
         }
 
-        return new Htmlify(
-            $plugin->get(EscapeHtml::class),
-            $container->get(HtmlElementInterface::class),
-            $translator
-        );
+        $escaper = $plugin->get(EscapeHtml::class);
+        $element = $container->get(HtmlElementInterface::class);
+
+        assert($escaper instanceof EscapeHtml);
+        assert($element instanceof HtmlElementInterface);
+
+        return new Htmlify($escaper, $element, $translator);
     }
 }
