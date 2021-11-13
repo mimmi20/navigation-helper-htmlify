@@ -22,6 +22,7 @@ use function array_diff_key;
 use function array_flip;
 use function array_key_exists;
 use function array_merge;
+use function assert;
 use function is_string;
 use function mb_strrpos;
 use function mb_strtolower;
@@ -66,12 +67,17 @@ final class Htmlify implements HtmlifyInterface
         $label = (string) $page->getLabel();
         $title = $page->getTitle();
 
-        if (!empty($label) && null !== $this->translator) {
-            $label = ($this->translator)($label, $page->getTextDomain());
-        }
+        if (null !== $this->translator) {
+            $textDomain = $page->getTextDomain();
+            assert(null === $textDomain || is_string($textDomain));
 
-        if (!empty($title) && null !== $this->translator) {
-            $title = ($this->translator)($title, $page->getTextDomain());
+            if (!empty($label)) {
+                $label = ($this->translator)($label, $textDomain);
+            }
+
+            if (!empty($title)) {
+                $title = ($this->translator)($title, $textDomain);
+            }
         }
 
         // get attribs for element
@@ -101,6 +107,8 @@ final class Htmlify implements HtmlifyInterface
 
         if (!empty($label) && $escapeLabel) {
             $label = ($this->escaper)($label);
+
+            assert(is_string($label));
         }
 
         if (array_key_exists('id', $attributes) && is_string($attributes['id'])) {

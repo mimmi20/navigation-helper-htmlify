@@ -86,7 +86,7 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
         $page->expects(self::once())
@@ -258,7 +258,7 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
         $page->expects(self::once())
@@ -429,7 +429,7 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
         $page->expects(self::once())
@@ -599,7 +599,7 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
         $page->expects(self::once())
@@ -772,7 +772,7 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn($title);
-        $page->expects(self::exactly(2))
+        $page->expects(self::once())
             ->method('getTextDomain')
             ->willReturn($textDomain);
         $page->expects(self::once())
@@ -814,12 +814,13 @@ final class HtmlifyTest extends TestCase
     {
         $expected = '<a id="breadcrumbs-testIdEscaped" titleEscaped="testTitleTranslatedAndEscaped" classEscaped="testClassEscaped" hrefEscaped="#Escaped" targetEscaped="_blankEscaped" onClick=\'{"a":"b"}\' data-test="test-class1 test-class2">testLabelTranslatedAndEscaped</a>';
 
-        $id       = 'testId';
-        $class    = 'test-class';
-        $href     = '#';
-        $target   = '_blank';
-        $onclick  = (object) ['a' => 'b'];
-        $testData = ['test-class1', 'test-class2'];
+        $id         = 'testId';
+        $class      = 'test-class';
+        $href       = '#';
+        $target     = '_blank';
+        $onclick    = (object) ['a' => 'b'];
+        $testData   = ['test-class1', 'test-class2'];
+        $textDomain = 'testDomain';
 
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
@@ -858,8 +859,9 @@ final class HtmlifyTest extends TestCase
         $page->expects(self::once())
             ->method('getTitle')
             ->willReturn(null);
-        $page->expects(self::never())
-            ->method('getTextDomain');
+        $page->expects(self::once())
+            ->method('getTextDomain')
+            ->willReturn($textDomain);
         $page->expects(self::once())
             ->method('getId')
             ->willReturn($id);
