@@ -91,7 +91,7 @@ final class Htmlify implements HtmlifyInterface
 
         if ($convertToButton) {
             $element = 'button';
-        } elseif ($page->getHref()) {
+        } elseif ('' !== $page->getHref()) {
             $element              = 'a';
             $attributes['href']   = $page->getHref();
             $attributes['target'] = $page->getTarget();
