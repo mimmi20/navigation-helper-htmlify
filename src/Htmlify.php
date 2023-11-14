@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
- * Copyright (c) 2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2021-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,8 +12,10 @@ declare(strict_types = 1);
 
 namespace Mimmi20\NavigationHelper\Htmlify;
 
+use Laminas\I18n\Exception\RuntimeException;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Navigation\Page\AbstractPage;
+use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtml;
 use Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
@@ -31,17 +33,13 @@ use function trim;
 
 final class Htmlify implements HtmlifyInterface
 {
-    private ?Translate $translator = null;
-
-    private EscapeHtml $escaper;
-
-    private HtmlElementInterface $htmlElement;
-
-    public function __construct(EscapeHtml $escaper, HtmlElementInterface $htmlElement, ?Translate $translator = null)
-    {
-        $this->escaper     = $escaper;
-        $this->translator  = $translator;
-        $this->htmlElement = $htmlElement;
+    /** @throws void */
+    public function __construct(
+        private readonly EscapeHtml $escaper,
+        private readonly HtmlElementInterface $htmlElement,
+        private readonly Translate | null $translator = null,
+    ) {
+        // nothing to do
     }
 
     /**
@@ -49,27 +47,30 @@ final class Htmlify implements HtmlifyInterface
      *
      * @param string                     $prefix             prefix to normalize the id attribute
      * @param AbstractPage|PageInterface $page               page to generate HTML for
-     * @param bool                       $escapeLabel        Whether or not to escape the label
-     * @param bool                       $addClassToListItem Whether or not to add the page class to the list item
+     * @param bool                       $escapeLabel        Whether to escape the label
+     * @param bool                       $addClassToListItem Whether to add the page class to the list item
      * @param array<string, string>      $attributes
-     * @param bool                       $convertToButton    Whether or not to convert a link to a button
+     * @param bool                       $convertToButton    Whether to convert a link to a button
      *
      * @return string HTML string
+     *
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function toHtml(
         string $prefix,
-        $page,
+        AbstractPage | PageInterface $page,
         bool $escapeLabel = true,
         bool $addClassToListItem = false,
         array $attributes = [],
-        bool $convertToButton = false
+        bool $convertToButton = false,
     ): string {
         $label = (string) $page->getLabel();
         $title = $page->getTitle();
 
-        if (null !== $this->translator) {
+        if ($this->translator !== null) {
             $textDomain = $page->getTextDomain();
-            assert(null === $textDomain || is_string($textDomain));
+            assert($textDomain === null || is_string($textDomain));
 
             if (!empty($label)) {
                 $label = ($this->translator)($label, $textDomain);
@@ -91,7 +92,7 @@ final class Htmlify implements HtmlifyInterface
 
         if ($convertToButton) {
             $element = 'button';
-        } elseif ('' !== $page->getHref()) {
+        } elseif ($page->getHref() !== '') {
             $element              = 'a';
             $attributes['href']   = $page->getHref();
             $attributes['target'] = $page->getTarget();
@@ -102,7 +103,7 @@ final class Htmlify implements HtmlifyInterface
         // remove sitemap specific attributes
         $attributes = array_diff_key(
             array_merge($attributes, $page->getCustomProperties()),
-            array_flip(['lastmod', 'changefreq', 'priority'])
+            array_flip(['lastmod', 'changefreq', 'priority']),
         );
 
         if (!empty($label) && $escapeLabel) {
@@ -120,6 +121,8 @@ final class Htmlify implements HtmlifyInterface
 
     /**
      * Normalize an ID
+     *
+     * @throws void
      */
     private function normalizeId(string $prefix, string $value): string
     {
