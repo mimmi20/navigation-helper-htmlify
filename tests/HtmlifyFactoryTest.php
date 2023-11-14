@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
- * Copyright (c) 2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2021-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,6 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\NavigationHelper\Htmlify;
 
-use Interop\Container\ContainerInterface;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager;
@@ -21,7 +20,8 @@ use Mimmi20\NavigationHelper\Htmlify\Htmlify;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 
 use function assert;
 
@@ -29,6 +29,7 @@ final class HtmlifyFactoryTest extends TestCase
 {
     private HtmlifyFactory $factory;
 
+    /** @throws void */
     protected function setUp(): void
     {
         $this->factory = new HtmlifyFactory();
@@ -36,7 +37,7 @@ final class HtmlifyFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationWithoutTranslator(): void
     {
@@ -58,10 +59,22 @@ final class HtmlifyFactoryTest extends TestCase
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $matcher   = self::exactly(2);
+        $container->expects($matcher)
             ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [HtmlElementInterface::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $htmlElement);
+            ->willReturnCallback(
+                static function (string $id) use ($matcher, $helperPluginManager, $htmlElement): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(HelperPluginManager::class, $id),
+                        default => self::assertSame(HtmlElementInterface::class, $id),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $helperPluginManager,
+                        default => $htmlElement,
+                    };
+                },
+            );
 
         assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);
@@ -71,7 +84,7 @@ final class HtmlifyFactoryTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
+     * @throws ContainerExceptionInterface
      */
     public function testInvocationWithTranslator(): void
     {
@@ -82,10 +95,24 @@ final class HtmlifyFactoryTest extends TestCase
         $helperPluginManager = $this->getMockBuilder(HelperPluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $helperPluginManager->expects(self::exactly(2))
+        $matcher             = self::exactly(2);
+        $helperPluginManager->expects($matcher)
             ->method('get')
-            ->withConsecutive([Translate::class], [EscapeHtml::class])
-            ->willReturnOnConsecutiveCalls($translatePlugin, $escapeHtml);
+            ->willReturnCallback(
+                static function (string $id, array | null $options = null) use ($matcher, $translatePlugin, $escapeHtml): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(Translate::class, $id),
+                        default => self::assertSame(EscapeHtml::class, $id),
+                    };
+
+                    self::assertNull($options);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $translatePlugin,
+                        default => $escapeHtml,
+                    };
+                },
+            );
         $helperPluginManager->expects(self::once())
             ->method('has')
             ->with(Translate::class)
@@ -94,10 +121,22 @@ final class HtmlifyFactoryTest extends TestCase
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $container->expects(self::exactly(2))
+        $matcher   = self::exactly(2);
+        $container->expects($matcher)
             ->method('get')
-            ->withConsecutive([HelperPluginManager::class], [HtmlElementInterface::class])
-            ->willReturnOnConsecutiveCalls($helperPluginManager, $htmlElement);
+            ->willReturnCallback(
+                static function (string $id) use ($matcher, $helperPluginManager, $htmlElement): mixed {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame(HelperPluginManager::class, $id),
+                        default => self::assertSame(HtmlElementInterface::class, $id),
+                    };
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $helperPluginManager,
+                        default => $htmlElement,
+                    };
+                },
+            );
 
         assert($container instanceof ContainerInterface);
         $helper = ($this->factory)($container);

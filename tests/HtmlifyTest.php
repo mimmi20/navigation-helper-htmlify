@@ -2,7 +2,7 @@
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
- * Copyright (c) 2021, Thomas Mueller <mimmi20@live.de>
+ * Copyright (c) 2021-2023, Thomas Mueller <mimmi20@live.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,15 +12,16 @@ declare(strict_types = 1);
 
 namespace Mimmi20Test\NavigationHelper\Htmlify;
 
+use Laminas\I18n\Exception\RuntimeException;
 use Laminas\I18n\View\Helper\Translate;
 use Laminas\Navigation\Page\AbstractPage;
+use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtml;
 use Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\NavigationHelper\Htmlify\Htmlify;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 use function assert;
 
@@ -29,6 +30,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlify(): void
     {
@@ -48,10 +50,25 @@ final class HtmlifyTest extends TestCase
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translatePlugin->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $translatePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($translatedLabel, $tranalatedTitle);
+            ->willReturnCallback(
+                static function (string $message, string | null $textDomainInput = null, string | null $locale = null) use ($matcher, $label, $title, $textDomain, $translatedLabel, $tranalatedTitle): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($label, $message),
+                        default => self::assertSame($title, $message),
+                    };
+
+                    self::assertSame($textDomain, $textDomainInput);
+                    self::assertNull($locale);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $translatedLabel,
+                        default => $tranalatedTitle,
+                    };
+                },
+            );
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -66,7 +83,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class, 'href' => $href, 'target' => $target], $escapedTranslatedLabel)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class, 'href' => $href, 'target' => $target],
+                $escapedTranslatedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -123,6 +144,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithoutTranslator(): void
     {
@@ -149,7 +171,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href, 'target' => $target], $escapedLabel)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href, 'target' => $target],
+                $escapedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -204,6 +230,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithoutEscapingLabel(): void
     {
@@ -222,10 +249,25 @@ final class HtmlifyTest extends TestCase
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translatePlugin->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $translatePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($translatedLabel, $tranalatedTitle);
+            ->willReturnCallback(
+                static function (string $message, string | null $textDomainInput = null, string | null $locale = null) use ($matcher, $label, $title, $textDomain, $translatedLabel, $tranalatedTitle): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($label, $message),
+                        default => self::assertSame($title, $message),
+                    };
+
+                    self::assertSame($textDomain, $textDomainInput);
+                    self::assertNull($locale);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $translatedLabel,
+                        default => $tranalatedTitle,
+                    };
+                },
+            );
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -238,7 +280,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class, 'href' => $href, 'target' => $target], $translatedLabel)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class, 'href' => $href, 'target' => $target],
+                $translatedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -295,6 +341,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithoutTranslatorAndEscapingLabel(): void
     {
@@ -318,7 +365,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href, 'target' => $target], $label)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href, 'target' => $target],
+                $label,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -373,6 +424,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithClassOnListItem(): void
     {
@@ -391,10 +443,25 @@ final class HtmlifyTest extends TestCase
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translatePlugin->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $translatePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($translatedLabel, $tranalatedTitle);
+            ->willReturnCallback(
+                static function (string $message, string | null $textDomainInput = null, string | null $locale = null) use ($matcher, $label, $title, $textDomain, $translatedLabel, $tranalatedTitle): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($label, $message),
+                        default => self::assertSame($title, $message),
+                    };
+
+                    self::assertSame($textDomain, $textDomainInput);
+                    self::assertNull($locale);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $translatedLabel,
+                        default => $tranalatedTitle,
+                    };
+                },
+            );
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -409,7 +476,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'href' => $href, 'target' => $target], $escapedTranslatedLabel)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'href' => $href, 'target' => $target],
+                $escapedTranslatedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -465,6 +536,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithoutTranslatorAndWithClassOnListItem(): void
     {
@@ -490,7 +562,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'href' => $href, 'target' => $target], $escapedLabel)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'href' => $href, 'target' => $target],
+                $escapedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -544,6 +620,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithoutHref(): void
     {
@@ -561,10 +638,25 @@ final class HtmlifyTest extends TestCase
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translatePlugin->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $translatePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($translatedLabel, $tranalatedTitle);
+            ->willReturnCallback(
+                static function (string $message, string | null $textDomainInput = null, string | null $locale = null) use ($matcher, $label, $title, $textDomain, $translatedLabel, $tranalatedTitle): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($label, $message),
+                        default => self::assertSame($title, $message),
+                    };
+
+                    self::assertSame($textDomain, $textDomainInput);
+                    self::assertNull($locale);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $translatedLabel,
+                        default => $tranalatedTitle,
+                    };
+                },
+            );
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -579,7 +671,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('span', ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class], $escapedTranslatedLabel)
+            ->with(
+                'span',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class],
+                $escapedTranslatedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -635,6 +731,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithoutTranslatorAndHref(): void
     {
@@ -659,7 +756,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('span', ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class], $escapedLabel)
+            ->with(
+                'span',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class],
+                $escapedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -713,6 +814,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClasses(): void
     {
@@ -734,10 +836,25 @@ final class HtmlifyTest extends TestCase
         $translatePlugin = $this->getMockBuilder(Translate::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $translatePlugin->expects(self::exactly(2))
+        $matcher         = self::exactly(2);
+        $translatePlugin->expects($matcher)
             ->method('__invoke')
-            ->withConsecutive([$label, $textDomain], [$title, $textDomain])
-            ->willReturnOnConsecutiveCalls($translatedLabel, $tranalatedTitle);
+            ->willReturnCallback(
+                static function (string $message, string | null $textDomainInput = null, string | null $locale = null) use ($matcher, $label, $title, $textDomain, $translatedLabel, $tranalatedTitle): string {
+                    match ($matcher->numberOfInvocations()) {
+                        1 => self::assertSame($label, $message),
+                        default => self::assertSame($title, $message),
+                    };
+
+                    self::assertSame($textDomain, $textDomainInput);
+                    self::assertNull($locale);
+
+                    return match ($matcher->numberOfInvocations()) {
+                        1 => $translatedLabel,
+                        default => $tranalatedTitle,
+                    };
+                },
+            );
 
         $escapeHtml = $this->getMockBuilder(EscapeHtml::class)
             ->disableOriginalConstructor()
@@ -752,7 +869,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData], $escapedTranslatedLabel)
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => $tranalatedTitle, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
+                $escapedTranslatedLabel,
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -809,6 +930,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClasses2(): void
     {
@@ -839,7 +961,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData], '')
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -896,6 +1022,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClasses3(): void
     {
@@ -919,7 +1046,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData], '')
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -974,6 +1105,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes(): void
     {
@@ -998,7 +1130,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('a', ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData] + $attributes, '')
+            ->with(
+                'a',
+                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -1053,6 +1189,7 @@ final class HtmlifyTest extends TestCase
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes2(): void
     {
@@ -1075,7 +1212,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('button', ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes, '')
+            ->with(
+                'button',
+                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -1122,12 +1263,16 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, true));
+        self::assertSame(
+            $expected,
+            $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, true),
+        );
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes3(): void
     {
@@ -1150,7 +1295,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('span', ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes, '')
+            ->with(
+                'span',
+                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(PageInterface::class)
@@ -1198,12 +1347,16 @@ final class HtmlifyTest extends TestCase
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
         assert($page instanceof PageInterface);
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false));
+        self::assertSame(
+            $expected,
+            $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false),
+        );
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes4(): void
     {
@@ -1226,7 +1379,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('span', ['id' => $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes, '')
+            ->with(
+                'span',
+                ['id' => $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(AbstractPage::class)
@@ -1261,7 +1418,9 @@ final class HtmlifyTest extends TestCase
             ->method('getTarget');
         $page->expects(self::once())
             ->method('getCustomProperties')
-            ->willReturn(['onClick' => $onclick, 'data-test' => $testData, 'lastmod' => '2020-02-01', 'changefreq' => '1', 'priority' => 1]);
+            ->willReturn(
+                ['onClick' => $onclick, 'data-test' => $testData, 'lastmod' => '2020-02-01', 'changefreq' => '1', 'priority' => 1],
+            );
         $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
@@ -1271,12 +1430,16 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false));
+        self::assertSame(
+            $expected,
+            $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false),
+        );
     }
 
     /**
      * @throws Exception
      * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function testHtmlifyWithArrayOfClassesAndAttributes5(): void
     {
@@ -1299,7 +1462,11 @@ final class HtmlifyTest extends TestCase
             ->getMock();
         $htmlElement->expects(self::once())
             ->method('toHtml')
-            ->with('span', ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes, '')
+            ->with(
+                'span',
+                ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                '',
+            )
             ->willReturn($expected);
 
         $page = $this->getMockBuilder(AbstractPage::class)
@@ -1334,7 +1501,9 @@ final class HtmlifyTest extends TestCase
             ->method('getTarget');
         $page->expects(self::once())
             ->method('getCustomProperties')
-            ->willReturn(['onClick' => $onclick, 'data-test' => $testData, 'lastmod' => '2020-02-01', 'changefreq' => '1', 'priority' => 1]);
+            ->willReturn(
+                ['onClick' => $onclick, 'data-test' => $testData, 'lastmod' => '2020-02-01', 'changefreq' => '1', 'priority' => 1],
+            );
         $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
@@ -1344,6 +1513,9 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        self::assertSame($expected, $helper->toHtml('Breadcrumbs\\Breadcrumbs', $page, true, false, $attributes, false));
+        self::assertSame(
+            $expected,
+            $helper->toHtml('Breadcrumbs\\Breadcrumbs', $page, true, false, $attributes, false),
+        );
     }
 }
