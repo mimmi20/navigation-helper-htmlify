@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace Mimmi20\NavigationHelper\Htmlify;
 
 use Laminas\I18n\View\Helper\Translate;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
@@ -21,14 +22,20 @@ use Psr\Container\ContainerInterface;
 
 use function assert;
 
-final class HtmlifyFactory
+final class HtmlifyFactory implements FactoryInterface
 {
     /**
      * Create and return a navigation view helper instance.
      *
+     * @param string            $requestedName
+     * @param array<mixed>|null $options
+     *
      * @throws ContainerExceptionInterface
+     *
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function __invoke(ContainerInterface $container): Htmlify
+    public function __invoke(ContainerInterface $container, $requestedName, array | null $options = null): Htmlify
     {
         $plugin     = $container->get(ViewHelperPluginManager::class);
         $translator = null;

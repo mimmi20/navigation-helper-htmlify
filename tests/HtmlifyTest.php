@@ -17,7 +17,6 @@ use Laminas\I18n\View\Helper\Translate;
 use Laminas\Navigation\Page\AbstractPage;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtml;
-use Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\NavigationHelper\Htmlify\Htmlify;
 use PHPUnit\Framework\Exception;
@@ -90,7 +89,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -126,8 +125,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -137,7 +134,7 @@ final class HtmlifyTest extends TestCase
         assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -178,7 +175,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -213,8 +210,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -223,7 +218,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -287,7 +282,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -323,8 +318,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -334,7 +327,7 @@ final class HtmlifyTest extends TestCase
         assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, false));
     }
 
@@ -372,7 +365,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -407,8 +400,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -417,7 +408,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, false));
     }
 
@@ -483,7 +474,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -518,8 +509,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -529,7 +518,7 @@ final class HtmlifyTest extends TestCase
         assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, true));
     }
 
@@ -569,7 +558,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -603,8 +592,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -613,7 +600,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, true));
     }
 
@@ -678,7 +665,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -713,8 +700,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -724,7 +709,7 @@ final class HtmlifyTest extends TestCase
         assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -763,7 +748,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -797,8 +782,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn([]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -807,7 +790,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -876,7 +859,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -912,8 +895,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => $onclick, 'data-test' => $testData]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -923,7 +904,7 @@ final class HtmlifyTest extends TestCase
         assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -968,7 +949,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -1004,8 +985,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => $onclick, 'data-test' => $testData]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -1015,7 +994,7 @@ final class HtmlifyTest extends TestCase
         assert($translatePlugin instanceof Translate);
         $helper = new Htmlify($escapeHtml, $htmlElement, $translatePlugin);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -1053,7 +1032,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -1088,8 +1067,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => $onclick, 'data-test' => $testData]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -1098,7 +1075,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page));
     }
 
@@ -1137,7 +1114,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -1172,8 +1149,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => $onclick, 'data-test' => $testData]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -1182,7 +1157,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame($expected, $helper->toHtml('Breadcrumbs', $page, true, false, $attributes));
     }
 
@@ -1219,7 +1194,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -1252,8 +1227,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => $onclick, 'data-test' => $testData]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -1262,7 +1235,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame(
             $expected,
             $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, true),
@@ -1302,7 +1275,7 @@ final class HtmlifyTest extends TestCase
             )
             ->willReturn($expected);
 
-        $page = $this->getMockBuilder(PageInterface::class)
+        $page = $this->getMockBuilder(AbstractPage::class)
             ->disableOriginalConstructor()
             ->getMock();
         $page->expects(self::never())
@@ -1336,8 +1309,6 @@ final class HtmlifyTest extends TestCase
             ->method('getCustomProperties')
             ->willReturn(['onClick' => $onclick, 'data-test' => $testData]);
         $page->expects(self::never())
-            ->method('hashCode');
-        $page->expects(self::never())
             ->method('getOrder');
         $page->expects(self::never())
             ->method('setParent');
@@ -1346,7 +1317,7 @@ final class HtmlifyTest extends TestCase
         assert($htmlElement instanceof HtmlElementInterface);
         $helper = new Htmlify($escapeHtml, $htmlElement);
 
-        assert($page instanceof PageInterface);
+        assert($page instanceof AbstractPage);
         self::assertSame(
             $expected,
             $helper->toHtml('Breadcrumbs', $page, true, false, $attributes, false),
