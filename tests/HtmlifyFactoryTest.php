@@ -77,7 +77,7 @@ final class HtmlifyFactoryTest extends TestCase
             );
 
         assert($container instanceof ContainerInterface);
-        $helper = ($this->factory)($container);
+        $helper = ($this->factory)($container, '');
 
         self::assertInstanceOf(Htmlify::class, $helper);
     }
@@ -139,7 +139,7 @@ final class HtmlifyFactoryTest extends TestCase
             );
 
         assert($container instanceof ContainerInterface);
-        $helper = ($this->factory)($container);
+        $helper = ($this->factory)($container, '');
 
         self::assertInstanceOf(Htmlify::class, $helper);
     }

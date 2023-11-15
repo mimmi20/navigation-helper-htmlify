@@ -17,7 +17,6 @@ use Laminas\I18n\View\Helper\Translate;
 use Laminas\Navigation\Page\AbstractPage;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtml;
-use Mezzio\Navigation\Page\PageInterface;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 
 use function array_diff_key;
@@ -45,12 +44,12 @@ final class Htmlify implements HtmlifyInterface
     /**
      * Returns an HTML string for the given page
      *
-     * @param string                     $prefix             prefix to normalize the id attribute
-     * @param AbstractPage|PageInterface $page               page to generate HTML for
-     * @param bool                       $escapeLabel        Whether to escape the label
-     * @param bool                       $addClassToListItem Whether to add the page class to the list item
-     * @param array<string, string>      $attributes
-     * @param bool                       $convertToButton    Whether to convert a link to a button
+     * @param string                $prefix             prefix to normalize the id attribute
+     * @param AbstractPage          $page               page to generate HTML for
+     * @param bool                  $escapeLabel        Whether to escape the label
+     * @param bool                  $addClassToListItem Whether to add the page class to the list item
+     * @param array<string, string> $attributes
+     * @param bool                  $convertToButton    Whether to convert a link to a button
      *
      * @return string HTML string
      *
@@ -59,7 +58,7 @@ final class Htmlify implements HtmlifyInterface
      */
     public function toHtml(
         string $prefix,
-        AbstractPage | PageInterface $page,
+        AbstractPage $page,
         bool $escapeLabel = true,
         bool $addClassToListItem = false,
         array $attributes = [],
