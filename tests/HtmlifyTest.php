@@ -1515,7 +1515,7 @@ final class HtmlifyTest extends TestCase
 
         self::assertSame(
             $expected,
-            $helper->toHtml('Breadcrumbs\\Breadcrumbs', $page, true, false, $attributes, false),
+            $helper->toHtml('Breadcrumbs\Breadcrumbs', $page, true, false, $attributes, false),
         );
     }
 }
