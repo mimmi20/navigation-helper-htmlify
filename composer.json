@@ -1,9 +1,8 @@
 {
   "name": "mimmi20/navigation-helper-htmlify",
-  "type": "library",
   "description": "Provides a accept-page helper for Laminas- and Mezzio Navigation",
-  "homepage": "https://github.com/mimmi20/navigation-helper-htmlify",
   "license": "MIT",
+  "type": "library",
   "authors": [
     {
       "name": "Thomas Müller",
@@ -11,6 +10,11 @@
       "role": "Developer"
     }
   ],
+  "homepage": "https://github.com/mimmi20/navigation-helper-htmlify",
+  "support": {
+    "issues": "https://github.com/mimmi20/navigation-helper-htmlify/issues",
+    "source": "https://github.com/mimmi20/navigation-helper-htmlify"
+  },
   "require": {
     "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
     "ext-mbstring": "*",
@@ -61,20 +65,15 @@
       "Mimmi20Test\\NavigationHelper\\Htmlify\\": "tests/"
     }
   },
-  "support": {
-    "issues": "https://github.com/mimmi20/navigation-helper-htmlify/issues",
-    "source": "https://github.com/mimmi20/navigation-helper-htmlify"
-  },
   "config": {
-    "preferred-install": "dist",
-    "lock": false,
-    "sort-packages": true,
     "allow-plugins": {
-      "laminas/laminas-dependency-plugin": true,
       "dealerdirect/phpcodesniffer-composer-installer": true,
-      "phpstan/extension-installer": true,
-      "infection/extension-installer": true
-    }
+      "infection/extension-installer": true,
+      "phpstan/extension-installer": true
+    },
+    "lock": false,
+    "preferred-install": "dist",
+    "sort-packages": true
   },
   "extra": {
     "laminas": {
