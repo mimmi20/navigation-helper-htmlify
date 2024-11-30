@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
@@ -15,6 +16,7 @@ namespace Mimmi20Test\NavigationHelper\Htmlify;
 use Mimmi20\NavigationHelper\Htmlify\ConfigProvider;
 use Mimmi20\NavigationHelper\Htmlify\Htmlify;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyInterface;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -23,6 +25,7 @@ final class ConfigProviderTest extends TestCase
     private ConfigProvider $provider;
 
     /** @throws void */
+    #[Override]
     protected function setUp(): void
     {
         $this->provider = new ConfigProvider();

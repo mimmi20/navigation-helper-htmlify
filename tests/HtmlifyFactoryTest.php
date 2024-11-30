@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
@@ -18,6 +19,7 @@ use Laminas\View\HelperPluginManager;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\NavigationHelper\Htmlify\Htmlify;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
+use Override;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -30,6 +32,7 @@ final class HtmlifyFactoryTest extends TestCase
     private HtmlifyFactory $factory;
 
     /** @throws void */
+    #[Override]
     protected function setUp(): void
     {
         $this->factory = new HtmlifyFactory();

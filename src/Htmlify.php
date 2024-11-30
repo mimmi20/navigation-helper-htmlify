@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
@@ -19,6 +20,7 @@ use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Helper\EscapeHtml;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\Mezzio\Navigation\Page\PageInterface;
+use Override;
 
 use function array_diff_key;
 use function array_flip;
@@ -31,13 +33,13 @@ use function mb_strtolower;
 use function mb_substr;
 use function trim;
 
-final class Htmlify implements HtmlifyInterface
+final readonly class Htmlify implements HtmlifyInterface
 {
     /** @throws void */
     public function __construct(
-        private readonly EscapeHtml $escaper,
-        private readonly HtmlElementInterface $htmlElement,
-        private readonly Translate | null $translator = null,
+        private EscapeHtml $escaper,
+        private HtmlElementInterface $htmlElement,
+        private Translate | null $translator = null,
     ) {
         // nothing to do
     }
@@ -57,6 +59,7 @@ final class Htmlify implements HtmlifyInterface
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
+    #[Override]
     public function toHtml(
         string $prefix,
         AbstractPage | PageInterface $page,

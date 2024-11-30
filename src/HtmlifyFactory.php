@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the mimmi20/navigation-helper-htmlify package.
  *
@@ -17,6 +18,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\View\Helper\EscapeHtml;
 use Laminas\View\HelperPluginManager as ViewHelperPluginManager;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
+use Override;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
@@ -35,6 +37,7 @@ final class HtmlifyFactory implements FactoryInterface
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
+    #[Override]
     public function __invoke(ContainerInterface $container, $requestedName, array | null $options = null): Htmlify
     {
         $plugin     = $container->get(ViewHelperPluginManager::class);
