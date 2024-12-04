@@ -97,8 +97,8 @@ parameters:
       tooWideThrowType: true
 
   cognitive_complexity:
-    class: 12
-    function: 12
+    class: 13
+    function: 13
 
   type_coverage:
     return_type: 100

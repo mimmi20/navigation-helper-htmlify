@@ -23,6 +23,7 @@ use Mimmi20\Mezzio\Navigation\Page\PageInterface;
 use Override;
 
 use function array_diff_key;
+use function array_filter;
 use function array_flip;
 use function array_key_exists;
 use function array_merge;
@@ -118,6 +119,11 @@ final readonly class Htmlify implements HtmlifyInterface
         if (array_key_exists('id', $attributes) && is_string($attributes['id'])) {
             $attributes['id'] = $this->normalizeId($prefix, $attributes['id']);
         }
+
+        $attributes = array_filter(
+            $attributes,
+            static fn (mixed $value): bool => $value !== null && $value !== '',
+        );
 
         return $this->htmlElement->toHtml($element, $attributes, $label);
     }
