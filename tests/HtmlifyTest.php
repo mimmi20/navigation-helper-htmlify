@@ -174,7 +174,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'a',
-                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href, 'target' => $target],
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href],
                 $escapedLabel,
             )
             ->willReturn($expected);
@@ -368,7 +368,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'a',
-                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href, 'target' => $target],
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'class' => $class, 'href' => $href],
                 $label,
             )
             ->willReturn($expected);
@@ -565,7 +565,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'a',
-                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'href' => $href, 'target' => $target],
+                ['id' => 'breadcrumbs-' . $id, 'title' => $title, 'href' => $href],
                 $escapedLabel,
             )
             ->willReturn($expected);
@@ -964,7 +964,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'a',
-                ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
+                ['id' => 'breadcrumbs-' . $id, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
                 '',
             )
             ->willReturn($expected);
@@ -1049,7 +1049,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'a',
-                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
+                ['id' => 'breadcrumbs-' . $id, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData],
                 '',
             )
             ->willReturn($expected);
@@ -1133,7 +1133,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'a',
-                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                ['id' => 'breadcrumbs-' . $id, 'class' => $class, 'href' => $href, 'target' => $target, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
                 '',
             )
             ->willReturn($expected);
@@ -1215,7 +1215,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'button',
-                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                ['id' => 'breadcrumbs-' . $id, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
                 '',
             )
             ->willReturn($expected);
@@ -1298,7 +1298,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'span',
-                ['id' => 'breadcrumbs-' . $id, 'title' => '', 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                ['id' => 'breadcrumbs-' . $id, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
                 '',
             )
             ->willReturn($expected);
@@ -1382,7 +1382,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'span',
-                ['id' => $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                ['id' => $id, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
                 '',
             )
             ->willReturn($expected);
@@ -1465,7 +1465,7 @@ final class HtmlifyTest extends TestCase
             ->method('toHtml')
             ->with(
                 'span',
-                ['id' => 'breadcrumbs-' . $id, 'title' => null, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
+                ['id' => 'breadcrumbs-' . $id, 'class' => $class, 'onClick' => $onclick, 'data-test' => $testData] + $attributes,
                 '',
             )
             ->willReturn($expected);
