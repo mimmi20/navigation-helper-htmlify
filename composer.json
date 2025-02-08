@@ -18,6 +18,7 @@
   "require": {
     "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
     "ext-mbstring": "*",
+    "laminas/laminas-servicemanager": "^3.22.1",
     "laminas/laminas-view": "^2.36.0",
     "mimmi20/laminasviewrenderer-helper-htmlelement": "^3.0.0"
   },
@@ -33,7 +34,6 @@
     "laminas/laminas-i18n": "^2.29.0",
     "laminas/laminas-modulemanager": "^2.17.0",
     "laminas/laminas-navigation": "^2.20.0",
-    "laminas/laminas-servicemanager": "^3.22.1",
     "mimmi20/coding-standard": "^6.0.10",
     "mimmi20/mezzio-navigation": "^4.0.3",
     "nikic/php-parser": "^5.4.0",
@@ -57,7 +57,6 @@
     "ext-intl": "required to use the Translator",
     "laminas/laminas-i18n": "Required to use the Translator",
     "laminas/laminas-navigation": "Required to use with Laminas",
-    "laminas/laminas-servicemanager": "Required to use the navigation factories",
     "mimmi20/mezzio-navigation": "Required to use with Mezzio"
   },
   "autoload": {
