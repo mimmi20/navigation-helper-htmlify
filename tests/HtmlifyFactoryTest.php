@@ -19,7 +19,7 @@ use Laminas\View\HelperPluginManager;
 use Mimmi20\LaminasView\Helper\HtmlElement\Helper\HtmlElementInterface;
 use Mimmi20\NavigationHelper\Htmlify\Htmlify;
 use Mimmi20\NavigationHelper\Htmlify\HtmlifyFactory;
-use Override;
+use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -29,18 +29,11 @@ use function assert;
 
 final class HtmlifyFactoryTest extends TestCase
 {
-    private HtmlifyFactory $factory;
-
-    /** @throws void */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->factory = new HtmlifyFactory();
-    }
-
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithoutTranslator(): void
     {
@@ -80,7 +73,7 @@ final class HtmlifyFactoryTest extends TestCase
             );
 
         assert($container instanceof ContainerInterface);
-        $helper = ($this->factory)($container, '');
+        $helper = (new HtmlifyFactory())($container, '');
 
         self::assertInstanceOf(Htmlify::class, $helper);
     }
@@ -88,6 +81,8 @@ final class HtmlifyFactoryTest extends TestCase
     /**
      * @throws Exception
      * @throws ContainerExceptionInterface
+     * @throws NoPreviousThrowableException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testInvocationWithTranslator(): void
     {
@@ -142,7 +137,7 @@ final class HtmlifyFactoryTest extends TestCase
             );
 
         assert($container instanceof ContainerInterface);
-        $helper = ($this->factory)($container, '');
+        $helper = (new HtmlifyFactory())($container, '');
 
         self::assertInstanceOf(Htmlify::class, $helper);
     }
