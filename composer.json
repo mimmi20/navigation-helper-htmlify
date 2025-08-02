@@ -1,6 +1,6 @@
 {
   "name": "mimmi20/navigation-helper-htmlify",
-  "description": "Provides a accept-page helper for Laminas- and Mezzio Navigation",
+  "description": "Provides a helper for Mezzio Navigation",
   "license": "MIT",
   "type": "library",
   "authors": [

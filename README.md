@@ -7,11 +7,13 @@
 ## Code Status
 
 [![codecov](https://codecov.io/gh/mimmi20/navigation-helper-htmlify/branch/master/graph/badge.svg)](https://codecov.io/gh/mimmi20/navigation-helper-htmlify)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/9882bde15c5f323dc5c8/test_coverage)](https://codeclimate.com/github/mimmi20/navigation-helper-htmlify/test_coverage)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/mimmi20/navigation-helper-htmlify.svg)](https://isitmaintained.com/project/mimmi20/navigation-helper-htmlify "Average time to resolve an issue")
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/mimmi20/navigation-helper-htmlify.svg)](https://isitmaintained.com/project/mimmi20/navigation-helper-htmlify "Percentage of issues still open")
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fmimmi20%2Fnavigation-helper-htmlify%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/mimmi20/navigation-helper-htmlify/master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/9882bde15c5f323dc5c8/maintainability)](https://codeclimate.com/github/mimmi20/navigation-helper-htmlify/maintainability)
+
+## Introduction
+
+This component provides a helper for Mezzio Navigation.
 
 ## Installation
 
