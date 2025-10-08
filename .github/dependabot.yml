@@ -36,6 +36,9 @@ updates:
       include: "scope"
       prefix: "composer (master)"
 
+    ignore:
+      - dependency-name: "laminas/laminas-servicemanager"
+
     # Disable rebasing for all pull requests
     rebase-strategy: "disabled"
 
